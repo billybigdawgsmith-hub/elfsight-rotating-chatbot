@@ -8,22 +8,36 @@
 body{
 margin:0;
 overflow:hidden;
+font-family:sans-serif;
 }
+
 #bot{
 width:100%;
 height:100vh;
 }
-</style>
 
+#status{
+position:fixed;
+bottom:6px;
+left:6px;
+background:black;
+color:white;
+padding:5px 8px;
+font-size:12px;
+border-radius:6px;
+opacity:.6;
+}
+</style>
 </head>
 
 <body>
 
 <div id="bot"></div>
+<div id="status"></div>
 
 <script>
 
-// ADD YOUR ELFSIGHT BOT IDS
+// ADD YOUR BOT IDS
 const bots = [
 "elfsight-app-f4b4da9f-b3be-4c53-a029-2b1d20911f0f",
 "elfsight-app-997363e6-f5ea-457e-9b99-5cc410e3027e",
@@ -35,18 +49,34 @@ const bots = [
 "elfsight-app-fa699a63-fec4-4d60-86da-581bdc4dc643"
 ];
 
-// Load Elfsight script
+// Load Elfsight platform
 const script = document.createElement("script");
 script.src = "https://apps.elfsight.com/p/platform.js";
 script.defer = true;
 document.head.appendChild(script);
 
-// Pick random bot
-const botIndex = Math.floor(Math.random() * bots.length);
+// Check if user already assigned a bot
+let botIndex = localStorage.getItem("assignedBot");
 
-// Load bot
+if(botIndex === null){
+
+botIndex = Math.floor(Math.random() * bots.length);
+
+localStorage.setItem("assignedBot", botIndex);
+
+}else{
+
+botIndex = parseInt(botIndex);
+
+}
+
+// Load chatbot
 document.getElementById("bot").innerHTML =
 `<div class="${bots[botIndex]}"></div>`;
+
+// Show correct status
+document.getElementById("status").innerText =
+`Bot ${botIndex + 1} / ${bots.length}`;
 
 </script>
 
