@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Elfsight Bot Rotator</title>
+
+<style>
+body{
+margin:0;
+overflow:hidden;
+font-family:sans-serif;
+}
+
+#botContainer{
+width:100%;
+height:100vh;
+}
+
+#status{
+position:fixed;
+bottom:6px;
+left:6px;
+background:black;
+color:white;
+padding:6px 8px;
+font-size:12px;
+border-radius:6px;
+opacity:.6;
+z-index:9999;
+}
+</style>
+
+</head>
+
+<body>
+
+<div id="botContainer"></div>
+<div id="status">Loading chatbot...</div>
+
+<script>
+
+// ADD YOUR ELFSIGHT APP IDS HERE
+const bots = [
+"elfsight-app-f4b4da9f-b3be-4c53-a029-2b1d20911f0f",
+"elfsight-app-997363e6-f5ea-457e-9b99-5cc410e3027e",
+"elfsight-app-b9a5351d-c390-4f7f-9517-bbab4c6d1023",
+"elfsight-app-5907c30f-3bc5-4934-844e-ca387f8c75ad",
+"elfsight-app-b0f3db3e-7b5a-4a40-bfab-ccc7dd1b0a09",
+"elfsight-app-881f8d02-2cd7-4a99-8c4e-b6dc248bd793",
+"elfsight-app-68b2254f-b53b-4755-b8e3-66de1ea6cdef",
+"elfsight-app-fa699a63-fec4-4d60-86da-581bdc4dc643"
+];
+
+let current = 0;
+let observer;
+
+// Load Elfsight platform script once
+const script = document.createElement("script");
+script.src = "https://apps.elfsight.com/p/platform.js";
+script.defer = true;
+document.head.appendChild(script);
+
+// Status text
+function setStatus(text){
+document.getElementById("status").innerText = text;
+}
+
+// Load chatbot
+function loadBot(index){
+
+setStatus(`Bot ${index+1} / ${bots.length}`);
+
+document.getElementById("botContainer").innerHTML =
+`<div class="${bots[index]}"></div>`;
+
+watchBot();
+
+}
+
+// Switch bot
+function nextBot(){
+
+if(observer) observer.disconnect();
+
+current++;
+
+if(current >= bots.length){
+current = 0;
+}
+
+setStatus("Switching chatbot...");
+
+setTimeout(()=>{
+loadBot(current);
+},1000);
+
+}
+
+// Watch for limit messages
+function watchBot(){
+
+observer = new MutationObserver(()=>{
+
+let text = document.body.innerText.toLowerCase();
+
+if(
+text.includes("limit") ||
+text.includes("upgrade") ||
+text.includes("quota") ||
+text.includes("queries")
+){
+
+setStatus("Limit reached → switching");
+
+nextBot();
+
+}
+
+});
+
+observer.observe(document.body,{
+childList:true,
+subtree:true
+});
+
+}
+
+// Start first bot
+loadBot(current);
+
+</script>
+
+</body>
+</html>
