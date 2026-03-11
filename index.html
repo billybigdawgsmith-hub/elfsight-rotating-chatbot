@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Chatbot</title>
+<title>Random Chatbot</title>
 
 <style>
 body{
@@ -55,26 +55,14 @@ script.src = "https://apps.elfsight.com/p/platform.js";
 script.defer = true;
 document.head.appendChild(script);
 
-// Check if user already assigned a bot
-let botIndex = localStorage.getItem("assignedBot");
-
-if(botIndex === null){
-
-botIndex = Math.floor(Math.random() * bots.length);
-
-localStorage.setItem("assignedBot", botIndex);
-
-}else{
-
-botIndex = parseInt(botIndex);
-
-}
+// Pick a random bot every page load
+const botIndex = Math.floor(Math.random() * bots.length);
 
 // Load chatbot
 document.getElementById("bot").innerHTML =
 `<div class="${bots[botIndex]}"></div>`;
 
-// Show correct status
+// Show which bot is active
 document.getElementById("status").innerText =
 `Bot ${botIndex + 1} / ${bots.length}`;
 
