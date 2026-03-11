@@ -2,31 +2,16 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Elfsight Bot Rotator</title>
+<title>Chatbot</title>
 
 <style>
 body{
 margin:0;
 overflow:hidden;
-font-family:sans-serif;
 }
-
-#botContainer{
+#bot{
 width:100%;
 height:100vh;
-}
-
-#status{
-position:fixed;
-bottom:6px;
-left:6px;
-background:black;
-color:white;
-padding:6px 8px;
-font-size:12px;
-border-radius:6px;
-opacity:.6;
-z-index:9999;
 }
 </style>
 
@@ -34,12 +19,11 @@ z-index:9999;
 
 <body>
 
-<div id="botContainer"></div>
-<div id="status">Loading chatbot...</div>
+<div id="bot"></div>
 
 <script>
 
-// ADD YOUR ELFSIGHT APP IDS HERE
+// ADD YOUR ELFSIGHT BOT IDS
 const bots = [
 "elfsight-app-f4b4da9f-b3be-4c53-a029-2b1d20911f0f",
 "elfsight-app-997363e6-f5ea-457e-9b99-5cc410e3027e",
@@ -51,82 +35,18 @@ const bots = [
 "elfsight-app-fa699a63-fec4-4d60-86da-581bdc4dc643"
 ];
 
-let current = 0;
-let observer;
-
-// Load Elfsight platform script once
+// Load Elfsight script
 const script = document.createElement("script");
 script.src = "https://apps.elfsight.com/p/platform.js";
 script.defer = true;
 document.head.appendChild(script);
 
-// Status text
-function setStatus(text){
-document.getElementById("status").innerText = text;
-}
+// Pick random bot
+const botIndex = Math.floor(Math.random() * bots.length);
 
-// Load chatbot
-function loadBot(index){
-
-setStatus(`Bot ${index+1} / ${bots.length}`);
-
-document.getElementById("botContainer").innerHTML =
-`<div class="${bots[index]}"></div>`;
-
-watchBot();
-
-}
-
-// Switch bot
-function nextBot(){
-
-if(observer) observer.disconnect();
-
-current++;
-
-if(current >= bots.length){
-current = 0;
-}
-
-setStatus("Switching chatbot...");
-
-setTimeout(()=>{
-loadBot(current);
-},1000);
-
-}
-
-// Watch for limit messages
-function watchBot(){
-
-observer = new MutationObserver(()=>{
-
-let text = document.body.innerText.toLowerCase();
-
-if(
-text.includes("limit") ||
-text.includes("upgrade") ||
-text.includes("quota") ||
-text.includes("queries")
-){
-
-setStatus("Limit reached → switching");
-
-nextBot();
-
-}
-
-});
-
-observer.observe(document.body,{
-childList:true,
-subtree:true
-});
-
-}
-
-// Start first bot
-loadBot(current);
+// Load bot
+document.getElementById("bot").innerHTML =
+`<div class="${bots[botIndex]}"></div>`;
 
 </script>
 
